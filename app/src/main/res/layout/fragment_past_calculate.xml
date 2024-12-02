@@ -35,7 +35,7 @@
             android:textAlignment="viewEnd"
             android:textColor="@color/gray"
             android:textSize="30sp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="@id/expression"
             app:layout_constraintStart_toStartOf="@id/expression"
             app:layout_constraintTop_toBottomOf="@id/expression" />
@@ -44,14 +44,14 @@
             android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@id/answer"
             app:layout_constraintStart_toStartOf="@id/answer"
             app:layout_constraintTop_toBottomOf="@id/answer">
 
             <ImageButton
-                android:id="@+id/calculateBtn"
+                android:id="@+id/calculate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -79,11 +79,11 @@
             android:layout_width="match_parent"
             android:layout_height="10dp"
             android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/under_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linearLayout"
-            app:layout_constraintBottom_toTopOf="@id/layout"
             tools:ignore="MissingConstraints" />
 
 
@@ -150,7 +150,6 @@
                         android:id="@+id/buttonDivide"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
                         android:background="@drawable/circle"
                         android:onClick="buttonClicked"
                         android:text="÷"
@@ -164,7 +163,6 @@
                         android:id="@+id/buttonMultiply"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
                         android:background="@drawable/circle"
                         android:onClick="buttonClicked"
                         android:text="×"
@@ -178,7 +176,6 @@
                         android:id="@+id/buttonMinus"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
                         android:background="@drawable/circle"
                         android:onClick="buttonClicked"
                         android:text="－"
@@ -193,7 +190,6 @@
                         android:id="@+id/buttonPlus"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
                         android:background="@drawable/circle"
                         android:onClick="buttonClicked"
                         android:text="＋"
@@ -208,7 +204,6 @@
                         android:id="@+id/buttonEqual"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="2dp"
                         android:background="@drawable/circle"
                         android:backgroundTint="@color/skyblue"
                         android:onClick="buttonClicked"
