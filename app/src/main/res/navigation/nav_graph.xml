@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/HomeFragment">
+    <fragment
+        android:id="@+id/HomeFragment"
+        android:name="com.example.calculate.fragment.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_HomeFragment_to_pastCalculateFragment"
+            app:destination="@id/pastCalculateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pastCalculateFragment"
+        android:name="com.example.calculate.fragment.pastCalculateFragment"
+        android:label="pastCalculateFragment" >
+        <action
+            android:id="@+id/action_pastCalculateFragment_to_HomeFragment"
+            app:destination="@id/HomeFragment" />
+    </fragment>
+</navigation>
