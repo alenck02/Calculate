@@ -90,7 +90,7 @@
         <LinearLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -102,14 +102,14 @@
             <LinearLayout
                 android:id="@+id/pastCalculate"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 android:shrinkColumns="*"
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/delete_past"
@@ -135,7 +135,7 @@
             <TableLayout
                 android:id="@+id/keypadTabLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:shrinkColumns="*"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -150,8 +150,8 @@
                         android:id="@+id/buttonDivide"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/number_border"
+                        android:layout_margin="2dp"
+                        android:background="@drawable/circle"
                         android:onClick="buttonClicked"
                         android:text="÷"
                         android:textColor="@color/skyblue"
@@ -164,8 +164,8 @@
                         android:id="@+id/buttonMultiply"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/number_border"
+                        android:layout_margin="2dp"
+                        android:background="@drawable/circle"
                         android:onClick="buttonClicked"
                         android:text="×"
                         android:textColor="@color/skyblue"
@@ -178,8 +178,8 @@
                         android:id="@+id/buttonMinus"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/number_border"
+                        android:layout_margin="2dp"
+                        android:background="@drawable/circle"
                         android:onClick="buttonClicked"
                         android:text="－"
                         android:textColor="@color/skyblue"
@@ -193,8 +193,8 @@
                         android:id="@+id/buttonPlus"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/number_border"
+                        android:layout_margin="2dp"
+                        android:background="@drawable/circle"
                         android:onClick="buttonClicked"
                         android:text="＋"
                         android:textColor="@color/skyblue"
@@ -208,8 +208,9 @@
                         android:id="@+id/buttonEqual"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/equal_border"
+                        android:layout_margin="2dp"
+                        android:background="@drawable/circle"
+                        android:backgroundTint="@color/skyblue"
                         android:onClick="buttonClicked"
                         android:text="＝"
                         android:textColor="@color/white"
