@@ -92,6 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="horizontal"
+            android:gravity="right"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +109,8 @@
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
+                    android:layout_gravity="right"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <Button
@@ -128,8 +130,9 @@
 
             <View
                 android:background="@color/gray"
-                android:layout_width="3dp"
+                android:layout_width="2dp"
                 android:layout_height="match_parent"
+                android:layout_marginVertical="10dp"
                 android:shrinkColumns="*" />
 
             <TableLayout
@@ -137,6 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:shrinkColumns="*"
+                android:layout_marginRight="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

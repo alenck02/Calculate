@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.example.calculate.R
 import com.example.calculate.databinding.FragmentHomeBinding
 import com.example.calculate.databinding.FragmentPastCalculateBinding
@@ -17,11 +19,22 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
     private var pastfragment: FragmentPastCalculateBinding? = null
     private val binding get() = pastfragment!!
 
+    lateinit var navController: NavController
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         pastfragment = FragmentPastCalculateBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
+
+        binding.calculate.setOnClickListener {
+            navController.navigate(R.id.action_pastCalculateFragment_to_HomeFragment)
+        }
     }
 }
