@@ -9,9 +9,11 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calculate.R
-import com.example.calculate.databinding.FragmentHomeBinding
+import com.example.calculate.adapter.calculateAdapter
 import com.example.calculate.databinding.FragmentPastCalculateBinding
+import com.example.calculate.model.calculate
 
 @RequiresApi(Build.VERSION_CODES.O)
 class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
@@ -20,6 +22,8 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
     private val binding get() = pastfragment!!
 
     lateinit var navController: NavController
+
+    private lateinit var  calculateAdapter: calculateAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,5 +40,28 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
         binding.calculate.setOnClickListener {
             navController.navigate(R.id.action_pastCalculateFragment_to_HomeFragment)
         }
+
+        initRecycler()
+    }
+
+    private fun initRecycler() {
+        calculateAdapter = calculateAdapter()
+
+        binding.recyclerview.apply {
+            val adapter = calculateAdapter
+            binding.recyclerview.adapter = adapter
+            val manager =LinearLayoutManager(context)
+
+            setHasFixedSize(true)
+            manager.stackFromEnd = true
+
+            binding.recyclerview.layoutManager = manager
+        }
+
+        calculateAdapter.differ.add(calculate(0, "950,000-200,000", "750,000"))
+        calculateAdapter.differ.add(calculate(1, "950,000-300,000", "650,000"))
+        calculateAdapter.differ.add(calculate(2, "40+39", "79"))
+        calculateAdapter.differ.add(calculate(3, "6×8", "48"))
+        calculateAdapter.differ.add(calculate(4, "50÷5", "10"))
     }
 }
