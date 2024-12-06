@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.fragment.app.findFragment
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calculate.R
 import com.example.calculate.adapter.calculateAdapter
@@ -20,8 +23,6 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
 
     private var pastfragment: FragmentPastCalculateBinding? = null
     private val binding get() = pastfragment!!
-
-    lateinit var navController: NavController
 
     private lateinit var  calculateAdapter: calculateAdapter
 
@@ -35,10 +36,12 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(view)
 
         binding.calculate.setOnClickListener {
-            navController.navigate(R.id.action_pastCalculateFragment_to_HomeFragment)
+            it.findNavController().navigate(R.id.action_pastCalculateFragment_to_HomeFragment, null,
+            NavOptions.Builder()
+                .setPopUpTo(R.id.pastCalculateFragment, true)
+                .build())
         }
 
         initRecycler()
