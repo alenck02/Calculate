@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.example.calculate.R
@@ -33,6 +34,29 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 NavOptions.Builder()
                     .setPopUpTo(R.id.HomeFragment, true)
                     .build())
+        }
+
+        btn_click()
+    }
+
+    fun btn_click() {
+        binding.buttonC.setOnClickListener {
+            binding.expression.text = ""
+            binding.answer.text = ""
+        }
+
+        binding.button0.setOnClickListener {
+            if (binding.expression.text == "0") {
+                binding.expression.text = "${binding.expression.text}"
+            } else if (binding.expression.text == "") {
+                binding.expression.text = "0"
+            } else {
+                binding.expression.text = "${binding.expression.text}0"
+            }
+        }
+
+        binding.button1.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}1"
         }
     }
 }
