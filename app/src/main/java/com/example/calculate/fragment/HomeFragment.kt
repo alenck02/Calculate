@@ -36,6 +36,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     .build())
         }
 
+        binding.backspace.setOnClickListener {
+            var str = binding.expression.text.toString()
+            if (str.isNotEmpty()) {
+                str = str.substring(0, str.length-1)
+                binding.expression.text = str
+            }
+        }
+
         btn_click()
     }
 
@@ -57,6 +65,75 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         binding.button1.setOnClickListener {
             binding.expression.text = "${binding.expression.text}1"
+        }
+
+        binding.button2.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}2"
+        }
+
+        binding.button3.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}3"
+        }
+
+        binding.button4.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}4"
+        }
+
+        binding.button5.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}5"
+        }
+
+        binding.button6.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}6"
+        }
+
+        binding.button7.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}7"
+        }
+
+        binding.button8.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}8"
+        }
+
+        binding.button9.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}9"
+        }
+
+        binding.buttonPoint.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}."
+        }
+
+        binding.buttonPosNeg.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}±"
+        }
+
+        binding.buttonParentheses.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}()"
+        }
+
+        binding.buttonPercent.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}%"
+        }
+
+        binding.buttonDivide.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}÷"
+        }
+
+        binding.buttonMultiply.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}×"
+        }
+
+        binding.buttonMinus.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}-"
+        }
+
+        binding.buttonPlus.setOnClickListener {
+            binding.expression.text = "${binding.expression.text}+"
+        }
+
+        binding.buttonEqual.setOnClickListener {
+            binding.expression.text = "${binding.answer.text}"
+            binding.answer.text = ""
         }
     }
 }
