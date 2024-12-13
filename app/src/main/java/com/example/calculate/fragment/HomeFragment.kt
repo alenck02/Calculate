@@ -99,17 +99,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         binding.button8.setOnClickListener {
             binding.expression.text = "${binding.expression.text}8"
-
-            if (binding.expression.text.contains("+")) {
-                equal_btn()
-            } else {
-                binding.answer.text = ""
-            }
         }
 
         binding.button9.setOnClickListener {
             binding.expression.text = "${binding.expression.text}9"
-            binding.answer.text = String.format("%d", b)
         }
 
         binding.buttonPoint.setOnClickListener {
