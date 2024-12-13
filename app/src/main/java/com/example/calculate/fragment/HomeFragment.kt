@@ -134,6 +134,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 } else {
                     binding.expression.text = "${binding.expression.text}(-"
                 }
+            } else if (binding.expression.text.last() == '%' || binding.expression.text.last() == ')'){
+                binding.expression.text = "${binding.expression.text}×(-"
             } else {
                 binding.expression.text = "${binding.expression.text}(-"
             }
