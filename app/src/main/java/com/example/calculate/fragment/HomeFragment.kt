@@ -17,6 +17,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private var homeBinding: FragmentHomeBinding? = null
     private val binding get() = homeBinding!!
 
+    var a: String = ""
+    var list = mutableListOf<String>()
+    var b: Long = 0L
+    var c: Long = 1L
+    var d: Double = 1.0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -93,47 +99,211 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         binding.button8.setOnClickListener {
             binding.expression.text = "${binding.expression.text}8"
+
+            if (binding.expression.text.contains("+")) {
+                equal_btn()
+            } else {
+                binding.answer.text = ""
+            }
         }
 
         binding.button9.setOnClickListener {
             binding.expression.text = "${binding.expression.text}9"
+            binding.answer.text = String.format("%d", b)
         }
 
         binding.buttonPoint.setOnClickListener {
-            binding.expression.text = "${binding.expression.text}."
+            if (binding.expression.text.isEmpty()) {
+                binding.expression.text = "${binding.expression.text}0."
+            } else if (binding.expression.text.last() == '±' || binding.expression.text.last() == '('
+                || binding.expression.text.last() == ')' || binding.expression.text.last() == '%' || binding.expression.text.last() == '÷'
+                || binding.expression.text.last() == '×'  || binding.expression.text.last() == '-'  || binding.expression.text.last() == '+') {
+                binding.expression.text = "${binding.expression.text}0."
+            } else if (binding.expression.text.last() == '.') {
+                binding.expression.text = "${binding.expression.text}"
+            } else {
+                binding.expression.text = "${binding.expression.text}."
+            }
+
+            binding.answer.text = ""
         }
 
         binding.buttonPosNeg.setOnClickListener {
-            binding.expression.text = "${binding.expression.text}±"
+            if (binding.expression.text.isEmpty()) {
+                binding.expression.text = "${binding.expression.text}(-"
+            } else if (binding.expression.text.last() == '-' ) {
+                var str = binding.expression.text.toString()
+                str = str.substring(0, str.length-1)
+
+                if (str.last() == '(') {
+                    str = str.substring(0, str.length-1)
+                    binding.expression.text = str
+                } else {
+                    binding.expression.text = "${binding.expression.text}(-"
+                }
+            } else {
+                binding.expression.text = "${binding.expression.text}(-"
+            }
+
+            binding.answer.text = ""
         }
 
         binding.buttonParentheses.setOnClickListener {
             binding.expression.text = "${binding.expression.text}()"
+
+            binding.answer.text = ""
         }
 
         binding.buttonPercent.setOnClickListener {
-            binding.expression.text = "${binding.expression.text}%"
+            if (binding.expression.text.isEmpty()) {
+                Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
+            } else if (binding.expression.text.last() == '.' || binding.expression.text.last() == '±' || binding.expression.text.last() == '('
+                || binding.expression.text.last() == ')' || binding.expression.text.last() == '%' || binding.expression.text.last() == '÷'
+                || binding.expression.text.last() == '×'  || binding.expression.text.last() == '-'  || binding.expression.text.last() == '+') {
+                binding.expression.text = "${binding.expression.text}"
+            } else {
+                binding.expression.text = "${binding.expression.text}%"
+            }
+
+            binding.answer.text = ""
         }
 
         binding.buttonDivide.setOnClickListener {
-            binding.expression.text = "${binding.expression.text}÷"
+            if (binding.expression.text.isEmpty()) {
+                Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
+            } else if (binding.expression.text.last() == '.' || binding.expression.text.last() == '±' || binding.expression.text.last() == '('
+                || binding.expression.text.last() == ')' || binding.expression.text.last() == '%' || binding.expression.text.last() == '÷'
+                || binding.expression.text.last() == '×'  || binding.expression.text.last() == '-'  || binding.expression.text.last() == '+') {
+                binding.expression.text = "${binding.expression.text}"
+            } else {
+                binding.expression.text = "${binding.expression.text}÷"
+            }
+
+            binding.answer.text = ""
         }
 
         binding.buttonMultiply.setOnClickListener {
-            binding.expression.text = "${binding.expression.text}×"
+            if (binding.expression.text.isEmpty()) {
+                Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
+            } else if (binding.expression.text.last() == '.' || binding.expression.text.last() == '±' || binding.expression.text.last() == '('
+                || binding.expression.text.last() == ')' || binding.expression.text.last() == '%' || binding.expression.text.last() == '÷'
+                || binding.expression.text.last() == '×'  || binding.expression.text.last() == '-'  || binding.expression.text.last() == '+') {
+                binding.expression.text = "${binding.expression.text}"
+            } else {
+                binding.expression.text = "${binding.expression.text}×"
+            }
+
+            binding.answer.text = ""
         }
 
         binding.buttonMinus.setOnClickListener {
-            binding.expression.text = "${binding.expression.text}-"
+            if (binding.expression.text.isEmpty()) {
+                Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
+            } else if (binding.expression.text.last() == '.' || binding.expression.text.last() == '±' || binding.expression.text.last() == '('
+                || binding.expression.text.last() == ')' || binding.expression.text.last() == '%' || binding.expression.text.last() == '÷'
+                || binding.expression.text.last() == '×'  || binding.expression.text.last() == '-'  || binding.expression.text.last() == '+') {
+                binding.expression.text = "${binding.expression.text}"
+            } else {
+                binding.expression.text = "${binding.expression.text}-"
+            }
+
+            binding.answer.text = ""
         }
 
         binding.buttonPlus.setOnClickListener {
-            binding.expression.text = "${binding.expression.text}+"
+            if (binding.expression.text.isEmpty()) {
+                Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
+            } else if (binding.expression.text.last() == '.' || binding.expression.text.last() == '±' || binding.expression.text.last() == '('
+                || binding.expression.text.last() == ')' || binding.expression.text.last() == '%' || binding.expression.text.last() == '÷'
+                || binding.expression.text.last() == '×'  || binding.expression.text.last() == '-'  || binding.expression.text.last() == '+') {
+                binding.expression.text = "${binding.expression.text}"
+            } else {
+                binding.expression.text = "${binding.expression.text}+"
+            }
+
+            binding.answer.text = ""
         }
 
         binding.buttonEqual.setOnClickListener {
+            equal_btn()
+
             binding.expression.text = "${binding.answer.text}"
             binding.answer.text = ""
+        }
+    }
+
+    fun equal_btn() {
+        b = 0
+        c = 1
+        d = 1.0
+        if (list.size != 0) {
+            list = mutableListOf<String>()
+        }
+
+        if (binding.expression.text.contains("+")) {
+            val str = binding.expression.text.split("+")
+            val a = str[0].toDouble()
+            val z = a.toInt()
+
+            for (i in 0..str.size - 1) {
+                if(i == 0){
+                    list.add(z.toString())
+                    b += list.get(i).toInt()
+                }else{
+                    list.add(str[i])
+                    b += list.get(i).toInt()
+                }
+
+            }
+
+            binding.answer.text = String.format("%d", b)
+        }
+
+        if (binding.expression.text.contains("-")) {
+            val str = binding.expression.text.split("-")
+            val a = str[0].toDouble()
+            val z = a.toLong()
+            b = z
+            for (i in 0..str.size - 1) {
+                list.add(str[i])
+                if (i != 0) {
+                    b -= list.get(i).toInt()
+
+                }
+            }
+
+            binding.answer.text = String.format("%d", b)
+        }
+
+        if (binding.expression.text.contains("×")) {
+            val str = binding.expression.text.split("×")
+            val a = str[0].toDouble()
+            val z = a.toInt()
+
+            for (i in 0..str.size - 1) {
+                if(i == 0){
+                    list.add(z.toString())
+                    c *= list.get(i).toInt()
+                }else{
+                    list.add(str[i])
+                    c *= list.get(i).toInt()
+                }
+            }
+
+            binding.answer.text = String.format("%d", c)
+        }
+
+        if (binding.expression.text.contains("÷")) {
+            val str = binding.expression.text.split("÷")
+            d = str[0].toDouble()
+            for (i in 0..str.size - 1) {
+                list.add(str[i])
+                if (i != 0) {
+                    d /= list.get(i).toDouble()
+                }
+            }
+
+            binding.answer.text = String.format("%f", d)
         }
     }
 }
