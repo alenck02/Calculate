@@ -76,7 +76,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             homeBinding!!.buttonPlus,
             homeBinding!!.buttonMinus,
             homeBinding!!.buttonMultiply,
-            homeBinding!!.buttonDivide
+            homeBinding!!.buttonDivide,
+            homeBinding!!.buttonPoint,
+            homeBinding!!.buttonPercent
         )
 
         for (btn in operatorBtns) {
@@ -96,26 +98,45 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         homeBinding!!.backspace.setOnClickListener {
             var str = binding.expression.text.toString()
+
             if (str.isNotEmpty()) {
                 str = str.substring(0, str.length-1)
                 liveExpr.value = "${str}"
             }
         }
 
-        homeBinding!!.buttonPoint.setOnClickListener {
-            liveExpr.value = "."
+        homeBinding!!.buttonParentheses.setOnClickListener {
+            if (homeBinding!!.expression.text.contains('(')) {
+                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, homeBinding!!.buttonParentheses.text[1]) }
+            } else {
+                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, homeBinding!!.buttonParentheses.text[0]) }
+            }
         }
 
         homeBinding!!.buttonPosNeg.setOnClickListener {
-            liveExpr.value = "(-"
-        }
+            val text = "(-"
 
-        homeBinding!!.buttonParentheses.setOnClickListener {
-            liveExpr.value = "()"
-        }
+            if (homeBinding!!.expression.text.isEmpty()) {
+                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[0]) }
+                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[1]) }
+            } else if (homeBinding!!.expression.text.last() == '-') {
+                var str = binding.expression.text.toString()
 
-        homeBinding!!.buttonPercent.setOnClickListener {
-            liveExpr.value = "%"
+                if (str.isNotEmpty()) {
+                    str = str.substring(0, str.length-1)
+
+                    if (str.last() == '(') {
+                        str = str.substring(0, str.length-1)
+                        liveExpr.value = "${str}"
+                    } else {
+                        liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[0]) }
+                        liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[1]) }
+                    }
+                }
+            } else {
+                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[0]) }
+                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[1]) }
+            }
         }
     }
 
