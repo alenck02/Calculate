@@ -220,8 +220,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/btn_effect"
                     android:layout_margin="10dp"
-                    android:text="－"
-                    android:textStyle="bold"
+                    android:text="-"
                     android:textColor="@color/skyblue"
                     android:textSize="24sp" />
             </TableRow>
@@ -264,8 +263,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/btn_effect"
                     android:layout_margin="10dp"
-                    android:text="＋"
-                    android:textStyle="bold"
+                    android:text="+"
                     android:textColor="@color/skyblue"
                     android:textSize="24sp" />
             </TableRow>
