@@ -13,18 +13,13 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.example.calculate.R
 import com.example.calculate.databinding.FragmentHomeBinding
+import com.example.calculate.util.CalcUtil
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var homeBinding: FragmentHomeBinding? = null
     private val binding get() = homeBinding!!
     private var liveExpr : MutableLiveData<String> = MutableLiveData("")
-
-    var a: String = ""
-    var list = mutableListOf<String>()
-    var b: Long = 0L
-    var c: Long = 1L
-    var d: Double = 1.0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,8 +72,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             homeBinding!!.buttonMinus,
             homeBinding!!.buttonMultiply,
             homeBinding!!.buttonDivide,
-            homeBinding!!.buttonPoint,
-            homeBinding!!.buttonPercent
+            homeBinding!!.buttonPoint
         )
 
         for (btn in operatorBtns) {
@@ -89,11 +83,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         homeBinding!!.buttonC.setOnClickListener {
             liveExpr.value = ""
-            homeBinding!!.answer.text = ""
         }
 
         homeBinding!!.buttonEqual.setOnClickListener {
-            liveExpr.value = "${homeBinding!!.answer.text}"
+            if (homeBinding!!.expression.text.isEmpty()) {
+
+            } else if (homeBinding!!.expression.text.isNotEmpty() and isOperator(homeBinding!!.expression.text.last())) {
+                Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
+            } else if (homeBinding!!.expression.text.isNotEmpty()) {
+                val util = CalcUtil()
+                liveExpr.value = liveExpr.value?.let { it1 -> util.getResult(it1).toString() }
+            } else {
+
+            }
         }
 
         homeBinding!!.backspace.setOnClickListener {
@@ -112,32 +114,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, homeBinding!!.buttonParentheses.text[0]) }
             }
         }
-
-        homeBinding!!.buttonPosNeg.setOnClickListener {
-            val text = "(-"
-
-            if (homeBinding!!.expression.text.isEmpty()) {
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[0]) }
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[1]) }
-            } else if (homeBinding!!.expression.text.last() == '-') {
-                var str = binding.expression.text.toString()
-
-                if (str.isNotEmpty()) {
-                    str = str.substring(0, str.length-1)
-
-                    if (str.last() == '(') {
-                        str = str.substring(0, str.length-1)
-                        liveExpr.value = "${str}"
-                    } else {
-                        liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[0]) }
-                        liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[1]) }
-                    }
-                }
-            } else {
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[0]) }
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, text[1]) }
-            }
-        }
     }
 
     private fun isNumber(digit: Char): Boolean {
@@ -153,11 +129,26 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 (digit == '9')
     }
 
+    private fun isOperator(digit: Char): Boolean {
+        return (digit == '+') or
+                (digit == '-') or
+                (digit == '×') or
+                (digit == '÷')
+    }
+
     private fun addDigits(prevState :String, digit: Char): String {
-        return if ((prevState == "0") or (prevState == "0.0") or (prevState == "")) "$digit"
+        return if (isOperator(digit) and (prevState == "")) "$prevState"
+
+        else if ((prevState == "0") or (prevState == "0.0") or (prevState == "")) "$prevState$digit"
 
         else if (isNumber(prevState.last()) and isNumber(digit)) "$prevState$digit"
 
-        else "$prevState$digit"
+        else if (isNumber(prevState.last()) and (digit == '.')) "$prevState$digit"
+
+        else if ((prevState.last() == '.') and isNumber(digit)) "$prevState$digit"
+
+        else if (isOperator(prevState.last()) and isOperator(digit)) "$prevState"
+
+        else "$prevState $digit"
     }
 }
