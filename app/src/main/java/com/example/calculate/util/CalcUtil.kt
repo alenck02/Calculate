@@ -44,6 +44,7 @@ class CalcUtil {
             }
             i++
         }
+        
         return result[0].toDouble()
     }
 }

@@ -105,6 +105,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             if (str.isNotEmpty()) {
                 str = str.substring(0, str.length-1)
                 liveExpr.value = "${str}"
+
+                for (i in str) {
+                    if (str.last() == ' ') {
+                        str = str.substring(0, str.length-1)
+                        liveExpr.value = "${str}"
+                    } else {
+                        break
+                    }
+                }
             }
         }
 
@@ -140,6 +149,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun addDigits(prevState :String, digit: Char): String {
         return if (isOperator(digit) and (prevState == "")) "$prevState"
 
+        else if ((prevState == "") and (digit == '.')) "$prevState 0$digit"
+
         else if ((prevState == "0") or (prevState == "0.0") or (prevState == "")) "$prevState$digit"
 
         else if (isNumber(prevState.last()) and isNumber(digit)) "$prevState$digit"
@@ -147,6 +158,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         else if (isNumber(prevState.last()) and (digit == '.')) "$prevState$digit"
 
         else if ((prevState.last() == '.') and isNumber(digit)) "$prevState$digit"
+
+        else if ((prevState.last() == '.') and (digit == '.')) "$prevState"
+
+        else if (isOperator(prevState.last()) and (digit == '.')) "$prevState 0$digit"
 
         else if (isOperator(prevState.last()) and isOperator(digit)) "$prevState"
 
