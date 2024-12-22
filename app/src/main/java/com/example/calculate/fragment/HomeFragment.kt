@@ -149,7 +149,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun addDigits(prevState :String, digit: Char): String {
         return if (isOperator(digit) and (prevState == "")) "$prevState"
 
-        else if ((prevState == "") and (digit == '.')) "$prevState 0$digit"
+        else if ((prevState == "") and (digit == '.')) "0$digit"
 
         else if ((prevState == "0") or (prevState == "0.0") or (prevState == "")) "$prevState$digit"
 
