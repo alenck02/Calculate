@@ -169,6 +169,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         else if ((prevState.last() == '(') and (digit == '÷')) "$prevState"
 
+        else if ((prevState.last() == '(') and (digit == '.')) "$prevState 0$digit"
+
         else "$prevState $digit"
     }
 }
