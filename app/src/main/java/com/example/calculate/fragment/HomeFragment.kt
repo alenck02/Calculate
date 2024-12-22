@@ -165,6 +165,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         else if (isOperator(prevState.last()) and isOperator(digit)) "$prevState"
 
+        else if ((prevState.last() == '(') and (digit == '×')) "$prevState"
+
+        else if ((prevState.last() == '(') and (digit == '÷')) "$prevState"
+
         else "$prevState $digit"
     }
 }

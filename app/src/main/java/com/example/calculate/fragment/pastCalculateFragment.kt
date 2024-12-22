@@ -54,6 +54,8 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
         }
 
         initRecycler()
+
+        btn()
     }
 
     fun btn() {
