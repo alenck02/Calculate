@@ -1,50 +1,65 @@
 package com.example.calculate.util
 
 class CalcUtil {
-    fun getResult(expr: String): Double {
-        val calcUnit: List<String> = expr.split(" ")
-        val handleUnits = ArrayList<String>()
-        val result = ArrayList<String>()
-        var i = 0
-        while (i < calcUnit.size) {
-            if (calcUnit[i] == "×") {
-                handleUnits.set(
-                    handleUnits.size-1,
-                    (handleUnits[handleUnits.size-1].toDouble() * calcUnit[i+1].toDouble()).toString()
-                )
-                i++
-            } else if (calcUnit[i] == "÷") {
-                handleUnits.set(
-                    handleUnits.size-1,
-                    (handleUnits[handleUnits.size-1].toDouble() / calcUnit[i+1].toDouble()).toString()
-                )
-                i++
-            } else {
-                handleUnits.add(calcUnit[i])
+    fun getResult(expr: String): Number {
+        val tokens = expr.split(" ")
+        val outputQueue = mutableListOf<String>()
+        val operatorStack = mutableListOf<String>()
+
+        val precedence = mapOf(
+            "+" to 1,
+            "-" to 1,
+            "×" to 2,
+            "÷" to 2
+        )
+
+        for (token in tokens) {
+            when {
+                token.toDoubleOrNull() != null -> outputQueue.add(token)
+                token == "(" -> operatorStack.add(token)
+                token == ")" -> {
+                    while (operatorStack.isNotEmpty() && operatorStack.last() != "(") {
+                        outputQueue.add(operatorStack.removeAt(operatorStack.size - 1))
+                    }
+                    operatorStack.removeAt(operatorStack.size - 1)
+                }
+                else -> {
+                    while (operatorStack.isNotEmpty() && precedence[operatorStack.last()] ?: 0 >= precedence[token] ?: 0) {
+                        outputQueue.add(operatorStack.removeAt(operatorStack.size - 1))
+                    }
+                    operatorStack.add(token)
+                }
             }
-            i++
         }
 
-        i = 0
-        while (i < handleUnits.size) {
-            if (handleUnits[i] == "+") {
-                result.set(
-                    result.size-1,
-                    (result[result.size-1].toDouble() + handleUnits[i+1].toDouble()).toString()
-                )
-                i++
-            } else if (handleUnits[i] == "-") {
-                result.set(
-                    result.size-1,
-                    (result[result.size-1].toDouble() - handleUnits[i+1].toDouble()).toString()
-                )
-                i++
-            } else {
-                result.add(handleUnits[i])
-            }
-            i++
+        while (operatorStack.isNotEmpty()) {
+            outputQueue.add(operatorStack.removeAt(operatorStack.size - 1))
         }
-        
-        return result[0].toDouble()
+
+        val resultStack = mutableListOf<Double>()
+        for (token in outputQueue) {
+            when {
+                token.toDoubleOrNull() != null -> resultStack.add(token.toDouble())
+                else -> {
+                    val right = resultStack.removeAt(resultStack.size - 1)
+                    val left = resultStack.removeAt(resultStack.size - 1)
+                    val result = when (token) {
+                        "+" -> left + right
+                        "-" -> left - right
+                        "×" -> left * right
+                        "÷" -> left / right
+                        else -> throw IllegalArgumentException("Unknown operator: $token")
+                    }
+                    resultStack.add(result)
+                }
+            }
+        }
+
+        val finalResult = resultStack.last()
+        return if (finalResult % 1.0 == 0.0) {
+            finalResult.toInt()
+        } else {
+            finalResult
+        }
     }
 }
