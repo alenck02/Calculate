@@ -118,10 +118,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         homeBinding!!.buttonParentheses.setOnClickListener {
-            if (homeBinding!!.expression.text.contains('(')) {
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, homeBinding!!.buttonParentheses.text[1]) }
+            val currentExpression = liveExpr.value ?: ""
+
+            val openCount = currentExpression.count { it == '(' }
+            val closeCount = currentExpression.count { it == ')' }
+
+            if (openCount > closeCount) {
+                liveExpr.value = addDigits(currentExpression, ')')
             } else {
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, homeBinding!!.buttonParentheses.text[0]) }
+                liveExpr.value = addDigits(currentExpression, '(')
             }
         }
     }
@@ -146,31 +151,43 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 (digit == '÷')
     }
 
-    private fun addDigits(prevState :String, digit: Char): String {
-        return if (isOperator(digit) and (prevState == "")) "$prevState"
+    private fun addDigits(prevState: String, digit: Char): String {
+        return when {
+            isOperator(digit) && prevState.isEmpty() -> prevState
 
-        else if ((prevState == "") and (digit == '.')) "0$digit"
+            prevState.isEmpty() && digit == '.' -> "0$digit"
 
-        else if ((prevState == "0") or (prevState == "0.0") or (prevState == "")) "$prevState$digit"
+            (prevState == "0" || prevState == "0.0" || prevState.isEmpty()) -> "$prevState$digit"
 
-        else if (isNumber(prevState.last()) and isNumber(digit)) "$prevState$digit"
+            isNumber(prevState.last()) && isNumber(digit) -> "$prevState$digit"
 
-        else if (isNumber(prevState.last()) and (digit == '.')) "$prevState$digit"
+            isNumber(prevState.last()) && digit == '.' -> "$prevState$digit"
 
-        else if ((prevState.last() == '.') and isNumber(digit)) "$prevState$digit"
+            prevState.last() == '.' && isNumber(digit) -> "$prevState$digit"
 
-        else if ((prevState.last() == '.') and (digit == '.')) "$prevState"
+            prevState.last() == '.' && digit == '.' -> prevState
 
-        else if (isOperator(prevState.last()) and (digit == '.')) "$prevState 0$digit"
+            isOperator(prevState.last()) && digit == '.' -> "$prevState 0$digit"
 
-        else if (isOperator(prevState.last()) and isOperator(digit)) "$prevState"
+            isOperator(prevState.last()) && isOperator(digit) -> prevState
 
-        else if ((prevState.last() == '(') and (digit == '×')) "$prevState"
+            isOperator(prevState.last()) && digit == ')' -> "$prevState ("
 
-        else if ((prevState.last() == '(') and (digit == '÷')) "$prevState"
+            prevState.last() == '(' && (digit == '×' || digit == '÷') -> prevState
 
-        else if ((prevState.last() == '(') and (digit == '.')) "$prevState 0$digit"
+            prevState.last() == '(' && digit == '.' -> "$prevState 0$digit"
 
-        else "$prevState $digit"
+            prevState.last() == '(' && digit == ')' -> prevState
+
+            prevState.last() == ')' && isNumber(digit) -> "$prevState × $digit"
+
+            prevState.last() == ')' && digit == '(' -> "$prevState × $digit"
+
+            digit == ')' && prevState.count { it == '(' } > prevState.count { it == ')' } -> "$prevState $digit"
+
+            digit == '(' && (prevState.isEmpty() || isOperator(prevState.last()) || prevState.last() == '(') -> "$prevState $digit"
+
+            else -> "$prevState $digit"
+        }
     }
 }
