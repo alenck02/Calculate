@@ -179,6 +179,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             prevState.last() == '(' && digit == ')' -> prevState
 
+            isNumber(prevState.last()) && digit == '(' -> "$prevState × $digit"
+
             prevState.last() == ')' && isNumber(digit) -> "$prevState × $digit"
 
             prevState.last() == ')' && digit == '(' -> "$prevState × $digit"
