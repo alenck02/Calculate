@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.findFragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calculate.R
 import com.example.calculate.adapter.calculateAdapter
 import com.example.calculate.databinding.FragmentPastCalculateBinding
+import com.example.calculate.model.SharedViewModel
 import com.example.calculate.model.calculate
 import com.example.calculate.util.CalcUtil
 
@@ -27,7 +29,7 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
 
     private var pastfragment: FragmentPastCalculateBinding? = null
     private val binding get() = pastfragment!!
-    private var liveExpr : MutableLiveData<String> = MutableLiveData("")
+    private lateinit var sharedViewModel: SharedViewModel
 
     private lateinit var  calculateAdapter: calculateAdapter
 
@@ -41,8 +43,9 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        liveExpr.observe (viewLifecycleOwner) { data ->
+        sharedViewModel.expression.observe (viewLifecycleOwner) { data ->
             pastfragment!!.psExpression.setText(data)
         }
 
@@ -68,7 +71,7 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
 
         for (btn in operatorBtns) {
             btn.setOnClickListener {
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, btn.text[0]) }
+                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> addDigits(it1, btn.text[0]) }
             }
         }
 
@@ -79,7 +82,7 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
                 Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
             } else if (pastfragment!!.psExpression.text.isNotEmpty()) {
                 val util = CalcUtil()
-                liveExpr.value = liveExpr.value?.let { it1 -> util.getResult(it1).toString() }
+                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> util.getResult(it1).toString() }
             } else {
 
             }
@@ -90,12 +93,12 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
 
             if (str.isNotEmpty()) {
                 str = str.substring(0, str.length-1)
-                liveExpr.value = "${str}"
+                sharedViewModel.expression.value = "${str}"
 
                 for (i in str) {
                     if (str.last() == ' ') {
                         str = str.substring(0, str.length-1)
-                        liveExpr.value = "${str}"
+                        sharedViewModel.expression.value = "${str}"
                     } else {
                         break
                     }

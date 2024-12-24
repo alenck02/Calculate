@@ -10,17 +10,20 @@ import android.widget.Button
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.example.calculate.R
 import com.example.calculate.databinding.FragmentHomeBinding
+import com.example.calculate.model.SharedViewModel
 import com.example.calculate.util.CalcUtil
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var homeBinding: FragmentHomeBinding? = null
     private val binding get() = homeBinding!!
-    private var liveExpr : MutableLiveData<String> = MutableLiveData("")
+    private lateinit var sharedViewModel: SharedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,12 +36,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     @SuppressLint("ResourceType")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        liveExpr.observe (viewLifecycleOwner) { data ->
+        sharedViewModel.expression.observe (viewLifecycleOwner) { data ->
             homeBinding!!.expression.setText(data)
         }
 
         binding.pastTimeBtn.setOnClickListener {
+            sharedViewModel.expression.value = homeBinding!!.expression.text.toString()
+
             it.findNavController().navigate(R.id.action_HomeFragment_to_pastCalculateFragment, null,
                 NavOptions.Builder()
                     .setPopUpTo(R.id.HomeFragment, true)
@@ -64,7 +70,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         for (btn in numberBtns) {
             btn.setOnClickListener {
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, btn.text[0]) }
+                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> addDigits(it1, btn.text[0]) }
             }
         }
 
@@ -78,12 +84,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         for (btn in operatorBtns) {
             btn.setOnClickListener {
-                liveExpr.value = liveExpr.value?.let { it1 -> addDigits(it1, btn.text[0]) }
+                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> addDigits(it1, btn.text[0]) }
             }
         }
 
         homeBinding!!.buttonC.setOnClickListener {
-            liveExpr.value = ""
+            sharedViewModel.expression.value = ""
         }
 
         homeBinding!!.buttonEqual.setOnClickListener {
@@ -93,7 +99,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
             } else if (homeBinding!!.expression.text.isNotEmpty()) {
                 val util = CalcUtil()
-                liveExpr.value = liveExpr.value?.let { it1 -> util.getResult(it1).toString() }
+                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> util.getResult(it1).toString() }
             } else {
 
             }
@@ -104,12 +110,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
             if (str.isNotEmpty()) {
                 str = str.substring(0, str.length-1)
-                liveExpr.value = "${str}"
+                sharedViewModel.expression.value = "${str}"
 
                 for (i in str) {
                     if (str.last() == ' ') {
                         str = str.substring(0, str.length-1)
-                        liveExpr.value = "${str}"
+                        sharedViewModel.expression.value = "${str}"
                     } else {
                         break
                     }
@@ -118,15 +124,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         homeBinding!!.buttonParentheses.setOnClickListener {
-            val currentExpression = liveExpr.value ?: ""
+            val currentExpression = sharedViewModel.expression.value ?: ""
 
             val openCount = currentExpression.count { it == '(' }
             val closeCount = currentExpression.count { it == ')' }
 
             if (openCount > closeCount) {
-                liveExpr.value = addDigits(currentExpression, ')')
+                sharedViewModel.expression.value = addDigits(currentExpression, ')')
             } else {
-                liveExpr.value = addDigits(currentExpression, '(')
+                sharedViewModel.expression.value = addDigits(currentExpression, '(')
             }
         }
     }
