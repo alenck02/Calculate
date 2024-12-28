@@ -31,7 +31,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private lateinit var sharedViewModel: SharedViewModel
 
     private lateinit var calculateViewModel: CalculateViewModel
-    private lateinit var CalculateDatabase: CalculateDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

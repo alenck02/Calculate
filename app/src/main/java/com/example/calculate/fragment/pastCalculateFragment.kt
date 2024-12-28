@@ -36,7 +36,6 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
     private lateinit var sharedViewModel: SharedViewModel
 
     private lateinit var calculateViewModel: CalculateViewModel
-    private lateinit var CalculateDatabase: CalculateDatabase
 
     private lateinit var calculateAdapter: calculateAdapter
 
