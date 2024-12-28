@@ -148,7 +148,6 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
             val manager =LinearLayoutManager(context)
 
             setHasFixedSize(true)
-            manager.stackFromEnd = true
 
             binding.recyclerview.layoutManager = manager
         }
