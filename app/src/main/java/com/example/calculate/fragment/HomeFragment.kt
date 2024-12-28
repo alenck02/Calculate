@@ -15,15 +15,23 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.example.calculate.R
+import com.example.calculate.database.CalculateApplication
+import com.example.calculate.database.CalculateDatabase
 import com.example.calculate.databinding.FragmentHomeBinding
 import com.example.calculate.model.SharedViewModel
+import com.example.calculate.model.calculate
 import com.example.calculate.util.CalcUtil
+import com.example.calculate.viewModel.CalculateViewModel
+import com.example.calculate.viewModel.CalculateViewModelFactory
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private var homeBinding: FragmentHomeBinding? = null
     private val binding get() = homeBinding!!
     private lateinit var sharedViewModel: SharedViewModel
+
+    private lateinit var calculateViewModel: CalculateViewModel
+    private lateinit var CalculateDatabase: CalculateDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +45,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
+        val dao = (requireActivity().application as CalculateApplication).database.getCalculateDao()
+        calculateViewModel = ViewModelProvider(this, CalculateViewModelFactory(dao)).get(CalculateViewModel::class.java)
 
         sharedViewModel.expression.observe (viewLifecycleOwner) { data ->
             homeBinding!!.expression.setText(data)
@@ -98,8 +109,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             } else if (homeBinding!!.expression.text.isNotEmpty() and isOperator(homeBinding!!.expression.text.last())) {
                 Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
             } else if (homeBinding!!.expression.text.isNotEmpty()) {
+                val expression = binding.expression.text.toString()
                 val util = CalcUtil()
                 sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> util.getResult(it1).toString() }
+                val answer = binding.expression.text.toString()
+
+                val calculation = calculate(0, expression, answer)
+                calculateViewModel.insert(calculation)
             } else {
 
             }

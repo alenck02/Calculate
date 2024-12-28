@@ -1,8 +1,11 @@
 package com.example.calculate.util
 
+import java.text.DecimalFormat
+
 class CalcUtil {
-    fun getResult(expr: String): Any {
-        val tokens = expr.split(" ")
+    fun getResult(expr: String): String {
+        val sanitizedExpr = expr.replace(",", "")
+        val tokens = sanitizedExpr.split(" ")
         val outputQueue = mutableListOf<String>()
         val operatorStack = mutableListOf<String>()
 
@@ -70,13 +73,14 @@ class CalcUtil {
             }
 
             val finalResult = resultStack.last()
-            return if (finalResult % 1.0 == 0.0) {
-                finalResult.toInt()
-            } else {
-                finalResult
-            }
+            return formatNumber(finalResult)
         } catch (e: Exception) {
             return "Error: ${e.message}"
         }
+    }
+
+    private fun formatNumber(number: Double): String {
+        val decimalFormat = DecimalFormat("#,###.##")
+        return decimalFormat.format(number)
     }
 }

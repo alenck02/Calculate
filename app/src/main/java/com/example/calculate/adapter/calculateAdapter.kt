@@ -26,6 +26,7 @@ class calculateAdapter() : RecyclerView.Adapter<calculateAdapter.MyViewHolder>()
         private val context: Context,
         private val binding : ItemRecyclerBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(calculate: calculate) = with(binding) {
             binding.tvExpression.text = calculate.expression
             binding.tvAnswer.text = calculate.answer

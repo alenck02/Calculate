@@ -19,10 +19,14 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calculate.R
 import com.example.calculate.adapter.calculateAdapter
+import com.example.calculate.database.CalculateApplication
+import com.example.calculate.database.CalculateDatabase
 import com.example.calculate.databinding.FragmentPastCalculateBinding
 import com.example.calculate.model.SharedViewModel
 import com.example.calculate.model.calculate
 import com.example.calculate.util.CalcUtil
+import com.example.calculate.viewModel.CalculateViewModel
+import com.example.calculate.viewModel.CalculateViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
 class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
@@ -31,7 +35,10 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
     private val binding get() = pastfragment!!
     private lateinit var sharedViewModel: SharedViewModel
 
-    private lateinit var  calculateAdapter: calculateAdapter
+    private lateinit var calculateViewModel: CalculateViewModel
+    private lateinit var CalculateDatabase: CalculateDatabase
+
+    private lateinit var calculateAdapter: calculateAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +51,9 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+
+        val dao = (requireActivity().application as CalculateApplication).database.getCalculateDao()
+        calculateViewModel = ViewModelProvider(this, CalculateViewModelFactory(dao)).get(CalculateViewModel::class.java)
 
         sharedViewModel.expression.observe (viewLifecycleOwner) { data ->
             pastfragment!!.psExpression.setText(data)
@@ -81,8 +91,13 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
             } else if (pastfragment!!.psExpression.text.isNotEmpty() and isOperator(pastfragment!!.psExpression.text.last())) {
                 Toast.makeText(context, "완성되지 않은 수식입니다", Toast.LENGTH_SHORT).show()
             } else if (pastfragment!!.psExpression.text.isNotEmpty()) {
+                val expression = binding.psExpression.text.toString()
                 val util = CalcUtil()
                 sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> util.getResult(it1).toString() }
+                val answer = binding.psExpression.text.toString()
+
+                val calculation = calculate(0, expression, answer)
+                calculateViewModel.insert(calculation)
             } else {
 
             }
@@ -138,10 +153,10 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
             binding.recyclerview.layoutManager = manager
         }
 
-        calculateAdapter.differ.add(calculate(0, "950,000-200,000", "750,000"))
-        calculateAdapter.differ.add(calculate(1, "950,000-300,000", "650,000"))
-        calculateAdapter.differ.add(calculate(2, "40+39", "79"))
-        calculateAdapter.differ.add(calculate(3, "6×8", "48"))
-        calculateAdapter.differ.add(calculate(4, "50÷5", "10"))
+        calculateViewModel.allCalculations.observe(viewLifecycleOwner) { calculations ->
+            calculateAdapter.differ.clear()
+            calculateAdapter.differ.addAll(calculations)
+            calculateAdapter.notifyDataSetChanged()
+        }
     }
 }
