@@ -2,6 +2,7 @@ package com.example.calculate.fragment
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,18 +10,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.findFragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.NavOptions
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.calculate.R
 import com.example.calculate.adapter.calculateAdapter
 import com.example.calculate.database.CalculateApplication
-import com.example.calculate.database.CalculateDatabase
 import com.example.calculate.databinding.FragmentPastCalculateBinding
 import com.example.calculate.model.SharedViewModel
 import com.example.calculate.model.calculate
@@ -118,6 +114,10 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
                     }
                 }
             }
+        }
+
+        pastfragment!!.deletePast.setOnClickListener {
+            calculateViewModel.deleteAll()
         }
     }
 

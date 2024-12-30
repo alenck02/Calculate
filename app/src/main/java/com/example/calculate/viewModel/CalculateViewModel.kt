@@ -15,4 +15,10 @@ class CalculateViewModel(private val dao: CalculateDao) : ViewModel() {
             dao.insert(calculation)
         }
     }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            dao.deleteAll()
+        }
+    }
 }

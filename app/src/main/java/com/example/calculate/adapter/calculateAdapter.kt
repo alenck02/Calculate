@@ -1,6 +1,6 @@
 package com.example.calculate.adapter
 
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +13,7 @@ class calculateAdapter() : RecyclerView.Adapter<calculateAdapter.MyViewHolder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val binding = ItemRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MyViewHolder(parent.context, binding)
+        return MyViewHolder(binding)
     }
 
     override fun getItemCount(): Int = differ.size
@@ -23,11 +23,10 @@ class calculateAdapter() : RecyclerView.Adapter<calculateAdapter.MyViewHolder>()
     }
 
     inner class MyViewHolder(
-        private val context: Context,
         private val binding : ItemRecyclerBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(calculate: calculate) = with(binding) {
+        fun bind(calculate: calculate) {
             binding.tvExpression.text = calculate.expression
             binding.tvAnswer.text = calculate.answer
         }

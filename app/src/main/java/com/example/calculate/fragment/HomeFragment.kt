@@ -7,16 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ScrollView
 import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import com.example.calculate.R
 import com.example.calculate.database.CalculateApplication
-import com.example.calculate.database.CalculateDatabase
 import com.example.calculate.databinding.FragmentHomeBinding
 import com.example.calculate.model.SharedViewModel
 import com.example.calculate.model.calculate
@@ -64,6 +60,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         btn()
     }
 
+    private fun autoScrollToBottom() {
+        binding.scrollView.post {
+            binding.scrollView.fullScroll(View.FOCUS_DOWN) // ScrollView를 최하단으로 스크롤
+        }
+    }
+
     fun btn() {
         val numberBtns : Array<Button> = arrayOf(
             homeBinding!!.button0,
@@ -81,6 +83,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         for (btn in numberBtns) {
             btn.setOnClickListener {
                 sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> addDigits(it1, btn.text[0]) }
+                autoScrollToBottom()
             }
         }
 
@@ -95,6 +98,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         for (btn in operatorBtns) {
             btn.setOnClickListener {
                 sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> addDigits(it1, btn.text[0]) }
+                autoScrollToBottom()
             }
         }
 
@@ -115,8 +119,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
                 val calculation = calculate(0, expression, answer)
                 calculateViewModel.insert(calculation)
-            } else {
-
             }
         }
 
@@ -124,17 +126,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             var str = binding.expression.text.toString()
 
             if (str.isNotEmpty()) {
-                str = str.substring(0, str.length-1)
-                sharedViewModel.expression.value = "${str}"
-
-                for (i in str) {
-                    if (str.last() == ' ') {
-                        str = str.substring(0, str.length-1)
-                        sharedViewModel.expression.value = "${str}"
-                    } else {
-                        break
-                    }
-                }
+                str = str.substring(0, str.length - 1)
+                sharedViewModel.expression.value = str
+                autoScrollToBottom()
             }
         }
 
@@ -149,6 +143,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             } else {
                 sharedViewModel.expression.value = addDigits(currentExpression, '(')
             }
+            autoScrollToBottom()
         }
     }
 
@@ -199,6 +194,10 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             prevState.last() == '(' && digit == '.' -> "$prevState 0$digit"
 
             prevState.last() == '(' && digit == ')' -> prevState
+
+            prevState.last() == '(' && digit == '(' -> "$prevState $digit"
+
+            prevState.last() == ')' && digit == '.' -> "$prevState × 0$digit"
 
             isNumber(prevState.last()) && digit == '(' -> "$prevState × $digit"
 
