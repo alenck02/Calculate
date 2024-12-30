@@ -114,8 +114,16 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             } else if (homeBinding!!.expression.text.isNotEmpty()) {
                 val expression = binding.expression.text.toString()
                 val util = CalcUtil()
-                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> util.getResult(it1).toString() }
-                val answer = binding.expression.text.toString()
+
+                val result = util.getResult(expression)
+
+                if (result.startsWith("Error:")) {
+                    Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                sharedViewModel.expression.value = result
+                val answer = result
 
                 val calculation = calculate(0, expression, answer)
                 calculateViewModel.insert(calculation)
