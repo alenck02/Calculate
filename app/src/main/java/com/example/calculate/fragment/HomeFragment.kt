@@ -19,6 +19,7 @@ import com.example.calculate.model.calculate
 import com.example.calculate.util.CalcUtil
 import com.example.calculate.viewModel.CalculateViewModel
 import com.example.calculate.viewModel.CalculateViewModelFactory
+import java.text.DecimalFormat
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -62,7 +63,27 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun autoScrollToBottom() {
         binding.scrollView.post {
-            binding.scrollView.fullScroll(View.FOCUS_DOWN) // ScrollView를 최하단으로 스크롤
+            binding.scrollView.fullScroll(View.FOCUS_DOWN)
+        }
+    }
+
+    private fun formatNumberWithComma(number: String): String {
+        return if (number.isNotEmpty() && number.all { it.isDigit() }) {
+            val formattedNumber = DecimalFormat("#,###").format(number.toDouble())
+            formattedNumber
+        } else {
+            number
+        }
+    }
+
+    private fun formatExpressionWithCommas(expression: String): String {
+        val tokens = expression.split(" ")
+        return tokens.joinToString(" ") { token ->
+            if (token.all { it.isDigit() }) {
+                formatNumberWithComma(token)
+            } else {
+                token
+            }
         }
     }
 
@@ -82,7 +103,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         for (btn in numberBtns) {
             btn.setOnClickListener {
-                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> addDigits(it1, btn.text[0]) }
+                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 ->
+                    addDigits(it1, btn.text[0])
+                }
+
+                homeBinding!!.expression.text = formatExpressionWithCommas(sharedViewModel.expression.value ?: "")
                 autoScrollToBottom()
             }
         }
@@ -97,7 +122,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         for (btn in operatorBtns) {
             btn.setOnClickListener {
-                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> addDigits(it1, btn.text[0]) }
+                sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 ->
+                    val newState = addDigits(it1, btn.text[0])
+
+                    formatExpressionWithCommas(newState)
+                }
                 autoScrollToBottom()
             }
         }
@@ -146,11 +175,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             val openCount = currentExpression.count { it == '(' }
             val closeCount = currentExpression.count { it == ')' }
 
-            if (openCount > closeCount) {
-                sharedViewModel.expression.value = addDigits(currentExpression, ')')
+            val newState = if (openCount > closeCount) {
+                addDigits(currentExpression, ')')
             } else {
-                sharedViewModel.expression.value = addDigits(currentExpression, '(')
+                addDigits(currentExpression, '(')
             }
+
+            sharedViewModel.expression.value = newState
+            homeBinding!!.expression.text = formatExpressionWithCommas(newState)
             autoScrollToBottom()
         }
     }

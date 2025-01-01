@@ -29,8 +29,8 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
 
     private var pastfragment: FragmentPastCalculateBinding? = null
     private val binding get() = pastfragment!!
-    private lateinit var sharedViewModel: SharedViewModel
 
+    private lateinit var sharedViewModel: SharedViewModel
     private lateinit var calculateViewModel: CalculateViewModel
 
     private lateinit var calculateAdapter: calculateAdapter
@@ -66,6 +66,12 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
         btn()
     }
 
+    private fun autoScrollToBottom() {
+        binding.psScrollView.post {
+            binding.psScrollView.fullScroll(View.FOCUS_DOWN)
+        }
+    }
+
     fun btn() {
         val operatorBtns : Array<Button> = arrayOf(
             pastfragment!!.buttonPlus,
@@ -77,6 +83,7 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
         for (btn in operatorBtns) {
             btn.setOnClickListener {
                 sharedViewModel.expression.value = sharedViewModel.expression.value?.let { it1 -> addDigits(it1, btn.text[0]) }
+                autoScrollToBottom()
             }
         }
 
@@ -108,17 +115,9 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
             var str = binding.psExpression.text.toString()
 
             if (str.isNotEmpty()) {
-                str = str.substring(0, str.length-1)
-                sharedViewModel.expression.value = "${str}"
-
-                for (i in str) {
-                    if (str.last() == ' ') {
-                        str = str.substring(0, str.length-1)
-                        sharedViewModel.expression.value = "${str}"
-                    } else {
-                        break
-                    }
-                }
+                str = str.substring(0, str.length - 1)
+                sharedViewModel.expression.value = str
+                autoScrollToBottom()
             }
         }
 
