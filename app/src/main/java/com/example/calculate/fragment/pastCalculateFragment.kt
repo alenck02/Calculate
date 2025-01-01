@@ -23,6 +23,7 @@ import com.example.calculate.model.calculate
 import com.example.calculate.util.CalcUtil
 import com.example.calculate.viewModel.CalculateViewModel
 import com.example.calculate.viewModel.CalculateViewModelFactory
+import java.text.DecimalFormat
 
 @RequiresApi(Build.VERSION_CODES.O)
 class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
@@ -72,6 +73,26 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
         }
     }
 
+    private fun formatNumberWithComma(number: String): String {
+        val cleanedNumber = number.replace(",", "")
+        return if (cleanedNumber.isNotEmpty() && cleanedNumber.all { it.isDigit() }) {
+            DecimalFormat("#,###").format(cleanedNumber.toDouble())
+        } else {
+            number
+        }
+    }
+
+    private fun formatExpressionWithCommas(expression: String): String {
+        val tokens = expression.split(" ")
+        return tokens.joinToString(" ") { token ->
+            if (token.any { it.isDigit() }) {
+                formatNumberWithComma(token)
+            } else {
+                token
+            }
+        }
+    }
+
     fun btn() {
         val operatorBtns : Array<Button> = arrayOf(
             pastfragment!!.buttonPlus,
@@ -115,8 +136,14 @@ class pastCalculateFragment : Fragment(R.layout.fragment_past_calculate) {
             var str = binding.psExpression.text.toString()
 
             if (str.isNotEmpty()) {
-                str = str.substring(0, str.length - 1)
-                sharedViewModel.expression.value = str
+                if (str.last() == ',') {
+                    str = str.substring(0, str.length - 2)
+                } else {
+                    str = str.substring(0, str.length - 1)
+                }
+
+                sharedViewModel.expression.value = formatExpressionWithCommas(str)
+                pastfragment!!.psExpression.text = sharedViewModel.expression.value
                 autoScrollToBottom()
             }
         }

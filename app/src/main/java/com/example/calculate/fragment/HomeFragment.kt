@@ -68,9 +68,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun formatNumberWithComma(number: String): String {
-        return if (number.isNotEmpty() && number.all { it.isDigit() }) {
-            val formattedNumber = DecimalFormat("#,###").format(number.toDouble())
-            formattedNumber
+        val cleanedNumber = number.replace(",", "")
+        return if (cleanedNumber.isNotEmpty() && cleanedNumber.all { it.isDigit() }) {
+            DecimalFormat("#,###").format(cleanedNumber.toDouble())
         } else {
             number
         }
@@ -79,7 +79,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun formatExpressionWithCommas(expression: String): String {
         val tokens = expression.split(" ")
         return tokens.joinToString(" ") { token ->
-            if (token.all { it.isDigit() }) {
+            if (token.any { it.isDigit() }) {
                 formatNumberWithComma(token)
             } else {
                 token
@@ -163,8 +163,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             var str = binding.expression.text.toString()
 
             if (str.isNotEmpty()) {
-                str = str.substring(0, str.length - 1)
-                sharedViewModel.expression.value = str
+                if (str.last() == ',') {
+                    str = str.substring(0, str.length - 2)
+                } else {
+                    str = str.substring(0, str.length - 1)
+                }
+
+                sharedViewModel.expression.value = formatExpressionWithCommas(str)
+                homeBinding!!.expression.text = sharedViewModel.expression.value
                 autoScrollToBottom()
             }
         }
